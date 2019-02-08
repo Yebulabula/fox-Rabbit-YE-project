@@ -1,63 +1,50 @@
-import java.util.*;
 import java.util.Random;
+import java.util.*;
 
 /**
- * A simple model of a rabbit.
- * Rabbits age, move, breed, and die.
+ * 在这里给出对类 cow 的描述。
  * 
- * @author David J. Barnes and Michael Kölling
- * @version 2016.02.29 (2)
+ * @作者（你的名字）
+ * @版本（一个版本号或者一个日期）
  */
-public class Rabbit extends Animal 
+public class Cow extends Animal
 {
-    // Characteristics shared by all rabbits (class variables).
-
+    // 实例变量 - 用你自己的变量替换下面的例子
+    private int x;
     // The age at which a rabbit can start to breed.
     private static final int BREEDING_AGE = 5;
     // The age to which a rabbit can live.
-    private static final int MAX_AGE = 40;
-    private static final double BREEDING_PROBABILITY = 0.12;
+    private static final int MAX_AGE = 30;
+    private static final double BREEDING_PROBABILITY = 0.23;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 4;
-    // A shared random number generator to control breeding.
+    private static final int MAX_LITTER_SIZE = 5;
+    private int age;
+    
     private static final Random rand = Randomizer.getRandom();
-
-   
-
-    private int sexProbablity;
-    
-   
-
-    // Individual characteristics (instance fields).
-    // The rabbit's age.
-    
-
+    // A shared random number generator to control breeding.
     /**
-     * Create a new rabbit. A rabbit may be created with age
-     * zero (a new born) or with a random age.
-     * 
-     * @param randomAge If true, the rabbit will have a random age.
-     * @param field The field currently occupied.
-     * @param location The location within the field.
+     * 类 cow 的对象的构造函数
      */
-    public Rabbit(boolean randomAge, Field field, Location location,String sex)
+    public Cow(boolean randomAge,Field field,Location location,String sex)
     {
-        super(field, location);
+        // 初始化实例变量
+        super(field,location);
+        age = 0;
         if(randomAge) {
-            setAge(rand.nextInt(MAX_AGE));
-        }
+            age = rand.nextInt(MAX_AGE);
+        }  
     }
-
+    
     /**
      * This is what the rabbit does most of the time - it runs 
      * around. Sometimes it will breed or die of old age.
      * @param newRabbits A list to return newly born rabbits.
      */
-    public void act(List<Animal> newRabbits)
+    public void act(List<Animal> newCows)
     {
         incrementAge();
         if(isAlive()) {
-            giveBirth(newRabbits);            
+            giveBirth(newCows);            
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
             if(newLocation != null) {
@@ -69,8 +56,6 @@ public class Rabbit extends Animal
             }
         }
     }
-    
-    
     
     /**
      * Increase the age.
@@ -84,17 +69,13 @@ public class Rabbit extends Animal
         }
     }
     
-    private String sex()
-    {
-        return sex;
-    }
 
     /** 
      * Check whether or not this rabbit is to give birth at this step.
      * New births will be made into free adjacent locations.
      * @param newRabbits A list to return newly born rabbits.
      */
-    private void giveBirth(List<Animal> newRabbits)
+    private void giveBirth(List<Animal> newCows)
     {
         // New rabbits are born into adjacent locations.
         // Get a list of adjacent free locations.
@@ -105,23 +86,23 @@ public class Rabbit extends Animal
             Object animal1=field.getObjectAt(locate);
             if(animal1 instanceof Rabbit&&animal2 instanceof Rabbit)
             {
-                Rabbit rabbit1=(Rabbit)animal1;
-                Rabbit rabbit2=(Rabbit)animal2; 
-                sex=getGender();
-                if(!rabbit1.getGender().equals(rabbit2.getGender()))
+                Cow cow1=(Cow)animal1;
+                Cow cow2=(Cow)animal2; 
+                if(!cow1.getSex().equals(cow2.getSex()))
                 {
                     List<Location> free = field.getFreeAdjacentLocations(getLocation());
                     int births = breed();
                     for(int b = 0; b < births && free.size() > 0; b++) {
                         Location loc = free.remove(0);
-                        Rabbit young = new Rabbit(false, field, loc,sex);
-                        newRabbits.add(young);
+                        Cow  young = new Cow(false, field, loc,"");
+                        young.getGender();
+                        newCows.add(young);
                     }
                 }
             }
         }
     }
-    //
+
     /**
      * Generate a number representing the number of births,
      * if it can breed.
