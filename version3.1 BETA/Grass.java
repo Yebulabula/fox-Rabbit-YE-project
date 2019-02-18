@@ -20,7 +20,6 @@ public class Grass extends Plant
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
 
-    private int age;
     private int water;
     /**
      * 类 grass 的对象的构造函数
@@ -28,49 +27,54 @@ public class Grass extends Plant
     public Grass(boolean randomAge, Field field, Location location,boolean Eatable,boolean toxic)
     {
         super(field, location);
-        age = 0;
+        setAge(0);
         water = WATER_LEVEL;
         if(randomAge) {
-            age = rand.nextInt(MAX_AGE);
+            setAge(rand.nextInt(MAX_AGE));
             water = rand.nextInt(WATER_LEVEL);
-            if(age > EAT_AGE)
+            if(getAge() > EAT_AGE)
             {
                 canEat();
             }
         }
     }
-
+    
+    /**
+     * the plant's act in the sunny days.
+     */
     public void act_Sunny(List<Plant> newGrass)
     {
         incrementAge();
-        incrementWater();
+        absorbWater();
         if(isAlive()&&water>=0.4*(WATER_LEVEL)) {
             giveBirth(newGrass);            
         }
         else{}    
     }
-
-    /*
-     * public int getProportion()
-    {
-    Random rand = new Random();
-    int i=rand.nextInt(toxic_PROBABILITY.size());
-    int total;
-    total= toxic_PROBABILITY.get(i);
-    return total;
-    }
-     */ 
-
+    
+    /**
+     * the plant's act in the rainy days.
+     */
     public void act_Rainy(List<Plant> newGrass)
     {
         water = WATER_LEVEL;
         incrementAge();
-        incrementWater();
+        absorbWater();
         if(isAlive()) {}
     }
-
+    
+    /**
+     *
+     * increase the age of the grass.
+     * and if the grass is larger than 
+     * the EAT_AGE, the grass could be eaten by the animals.
+     * and if the grass is over than 
+     * the MAX_AGE, the grass will set dead.
+     * 
+     */
     private void incrementAge()
     {
+        int age= getAge();
         age++;
         if(age > EAT_AGE){
             canEat();
@@ -79,8 +83,13 @@ public class Grass extends Plant
             setDead();
         }
     }
-
-    private void incrementWater()
+   
+    /**
+     * the grass will absorb water everyday.
+     * when the water level is smaller than 0, the grass 
+     * will die.
+     */
+    private void absorbWater()
     {
         water--;
         if(water <= 0) {
@@ -88,11 +97,10 @@ public class Grass extends Plant
         }
     }
 
-    protected int getAge()
-    {
-        return age;
-    }  
-
+    /**
+     * the whole procedure to give birth to the grass. put them
+     * into the newGrass list.
+     */
     private void giveBirth(List<Plant> newGrass)
     {
         // New foxes are born into adjacent locations.
@@ -119,10 +127,14 @@ public class Grass extends Plant
         }
         else
         {
-            age+=1;
+            int age=getAge()+1;
         }
     }
-
+    
+    /**
+     * return the the number of newly born grasses.
+     * @ return the number of the newly born grasses.
+     */
     private int breed()
     {
         int births = 0;

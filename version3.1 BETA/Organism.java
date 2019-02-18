@@ -7,7 +7,7 @@ import java.util.*;
  */
 public abstract class Organism
 {
-    // 实例变量 - 用你自己的变量替换下面的例子
+    
     private int age;
     protected Field field;
     private boolean alive;
@@ -21,7 +21,6 @@ public abstract class Organism
         this.field = field;
         this.location = location;
         alive =true;
-        
     }
     
     /**
@@ -33,12 +32,25 @@ public abstract class Organism
         return alive;
     }
     
+    /**
+     * check the age of a single animal.
+     * @return the age of the animal.
+     */
     protected int getAge()
     {
         return age;
     } 
     
-     protected void setLocation(Location newLocation)
+     
+    protected void setAge(int Age)
+    {
+        this.age= age; 
+    }   
+   
+    /**
+     * to help the animal to set a new location. 
+     */
+    protected void setLocation(Location newLocation)
     {
         if(location != null) {
             field.clear(location);
@@ -47,6 +59,10 @@ public abstract class Organism
         field.placePla(this, newLocation);
     }
     
+    /**
+     * if the animal is not alive, the animal will die.
+     * set the alive to false.
+     */
     protected void setDead()
     {
         alive = false;
@@ -57,6 +73,9 @@ public abstract class Organism
         }
     }
     
+    /**
+     * get the current field of the animal.
+     */
     protected Field getField()
     {
         return field;

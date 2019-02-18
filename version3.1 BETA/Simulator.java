@@ -17,21 +17,27 @@ public class Simulator
     
     
     // The default width for the grid.
-    private static final int DEFAULT_WIDTH = 120;
+    private static final int DEFAULT_WIDTH = 200;
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
     // The probability that a fox will be created in any given grid position.
     private static final double FOX_CREATION_PROBABILITY = 0.4;//2;
     // The probability that a rabbit will be created in any given grid position.
     private static final double RABBIT_CREATION_PROBABILITY = 0.02;   
-    private static final double COW_CREATION_PROBABILITY= 0.2;//5;
+    // The probability that a cow will be created in any given grid position.
+    private static final double COW_CREATION_PROBABILITY= 0.2;
+    //The probability that a grass will be created in any given grid position.
     private static final double GRASS_CREATION_PROBABILITY = 0.1;    
-    private static final double TIGER_CREATION_PROBABILITY = 0.0;//1;   
+    //The probability that a tiger will be created in any given grid position.
+    private static final double TIGER_CREATION_PROBABILITY = 0.0;
+    //The probability that a wolf will be created in any given grid position.
     private static final double WOLF_CREATION_PROBABILITY=0.0;
     // List of animals in the field.
     private List<Animal> animals;
+    //The current weather of that day.
     private String currentWeather;
     private Weather weather;
+    //The timezone of a single dy
     private String timezone;
     private List<Plant> plants;
     // The current state of the field.
@@ -51,6 +57,7 @@ public class Simulator
 
     /**
      * Create a simulation field with the given size.
+     * Create a color to respresent different creatures;
      * @param depth Depth of the field. Must be greater than zero.
      * @param width Width of the field. Must be greater than zero.
      */
@@ -80,22 +87,14 @@ public class Simulator
         // Setup a valid starting point
         reset();
     }
-
-    protected String getTime()
-    {
-        if(step%2==0)
-        {
-            return "Night";
-        }
-        else
-        {
-            return "Morning";   
-        }
-    }
-
+    
+    /**
+     * to change the current weather randomly.
+     * @return current weather.
+     */
     protected String getWeather()
     {
-        weather= new Weather();
+        weather= new Weather();       
         currentWeather=weather.get_Weather();
         return currentWeather;
     }
@@ -125,7 +124,7 @@ public class Simulator
     /**
      * Run the simulation from its current state for a single step.
      * Iterate over the whole field updating the state of each
-     * fox and rabbit.
+     * cow,fox , rabbit ,tiger ,wolf and grass .
      */
     public void simulateOneStep()
     {
@@ -142,7 +141,9 @@ public class Simulator
         // Provide space for newborn animals.
         List<Animal> newAnimals = new ArrayList<>();   
         List<Plant> newPlants = new ArrayList<>();
-        // Let all rabbits act.
+        // Let all animals and grasses act.
+        // when step increases to an odd,the animal's act would change which depends
+        //on different weather.
         if(step%2==0)
         { 
             for(Iterator<Animal> it = animals.iterator(); it.hasNext(); ) { 
@@ -173,6 +174,7 @@ public class Simulator
                 }
             }
         }
+        // as the time zone is afternoon.
         else if(step%2==1)
         {
             for(Iterator<Animal> it = animals.iterator(); it.hasNext(); ) {
@@ -201,11 +203,11 @@ public class Simulator
                 }
             }
         }
-        // Add the newly born foxes and rabbits to the main lists.
+        // Add the newly born animals and plants to the main lists.
         currentWeather = getWeather();
         animals.addAll(newAnimals);
         plants.addAll(newPlants);
-        //..myFault
+        //show different status at the window.Eg:step,weather and so on.
         view.showStatus(step,currentWeather, field,timezone);
     }
 
@@ -219,7 +221,6 @@ public class Simulator
         animals.clear();
         plants.clear();
         populate();
-
         // Show the starting state in the view.
         view.showStatus(step,currentWeather ,field, timezone);
     }
@@ -233,9 +234,9 @@ public class Simulator
         field.clear();
         //weathe=currentWeather();
         currentWeather=getWeather();
-
+        //the initial timezone is am.
         timezone="am";
-
+        //create random number of animals with their field at the beginning.
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
                 if(rand.nextDouble() <= FOX_CREATION_PROBABILITY) {

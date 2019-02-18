@@ -20,10 +20,6 @@ public class Weather
        // Weather_list.add("foggy");
     }
 
-    public String choose_Weather(int n)
-    {
-        return Weather_list.get(n);
-    }
     public String get_Weather()
     {
         Random rand = new Random();
