@@ -22,7 +22,7 @@ public class Simulator
     private static final double FOX_CREATION_PROBABILITY = 0.0;//2;
     // The probability that a rabbit will be created in any given grid position.
     private static final double RABBIT_CREATION_PROBABILITY = 0.02;   
-    private static final double COW_CREATION_PROBABILITY= 0.0;//5;
+    private static final double COW_CREATION_PROBABILITY= 0.04;//5;
     private static final double GRASS_CREATION_PROBABILITY = 0.1;    
     private static final double TIGER_CREATION_PROBABILITY = 0.0;//1;   
 
