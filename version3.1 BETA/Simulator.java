@@ -21,11 +21,11 @@ public class Simulator
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
     // The probability that a fox will be created in any given grid position.
-    private static final double FOX_CREATION_PROBABILITY = 0.4;//2;
+    private static final double FOX_CREATION_PROBABILITY = 0.0;//2;
     // The probability that a rabbit will be created in any given grid position.
     private static final double RABBIT_CREATION_PROBABILITY = 0.02;   
     // The probability that a cow will be created in any given grid position.
-    private static final double COW_CREATION_PROBABILITY= 0.2;
+    private static final double COW_CREATION_PROBABILITY= 0.0;
     //The probability that a grass will be created in any given grid position.
     private static final double GRASS_CREATION_PROBABILITY = 0.1;    
     //The probability that a tiger will be created in any given grid position.
@@ -251,7 +251,8 @@ public class Simulator
                     Gender gender= new Gender();
                     gender.get_gender();
                     Location location = new Location(row, col);
-                    Rabbit rabbit = new Rabbit(true, field, location ,"young","",false); 
+                    Rabbit rabbit = new Rabbit(true, field, location ,"young","",false);
+                    rabbit.set_Yearstage(rabbit.getAge(),rabbit.get_Max_Age());
                     rabbit.setSex();
                     animals.add(rabbit);
                 }

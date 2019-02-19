@@ -107,7 +107,6 @@ public class Cow extends Animal
     }
         return null;
 }  
-    
 
     /**
      * Increase the age.

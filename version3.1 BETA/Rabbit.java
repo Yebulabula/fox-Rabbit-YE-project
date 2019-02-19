@@ -70,7 +70,7 @@ public class Rabbit extends Animal
             //Location location = Animalfather.getLocation();
             //if(Animalfather!=null)
             //{
-                newLocation=getField().freefourTimesfourLocation(location);
+               // newLocation=getField().freefourTimesfourLocation(location);
             //}
             if(getYearStage().equals("Young"))//young rabbit walks around his/her father.
             {
@@ -104,7 +104,7 @@ public class Rabbit extends Animal
                     
                 }
             }
-
+            
             if(newLocation != null) {
                 setLocation(newLocation);
             }
@@ -145,6 +145,11 @@ public class Rabbit extends Animal
         dayLives();
     }
 
+    public int get_Max_Age()
+    {
+        return MAX_AGE;
+    }
+    
     private Location findFood()
     {
         Field field = getField();
