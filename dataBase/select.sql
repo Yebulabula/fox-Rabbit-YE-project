@@ -1,0 +1,118 @@
+-- Part 2.3 select.sql
+--
+-- Submitted by: <Ye Mao>, <k1894303>
+--
+
+-- DO NOT use these SQL commands in your submission(they will cause an
+--  error on the NMS database server):
+-- CREATE SCHEMA
+-- USE
+
+
+-- 1. Average Female Salary
+-- Seletc all daily salaries of participants in table
+-- Participant and then get the average value
+SELECT AVG (dailySalary)
+FROM Participant
+WHERE gender="F";
+
+-- 2. Coaching Report.
+SELECT idCoach,COUNT(coach)
+-- Use left outer join to make sure that all coaches' info would be collected.
+FROM Coach LEFT OUTER JOIN Contender
+ON idCoach=coach
+GROUP BY idCoach;
+
+-- 3. Coach Monthly Attendance Report
+SELECT coach_id_mar,APRIL_COUNT,MARCH_COUNT
+-- select values from two select statements
+FROM(
+    -- the number of shows that each coach attended in April
+    (SELECT coach AS coach_id_apr,COUNT(coach) AS APRIL_COUNT
+     FROM CoachInShow,TVShow
+     WHERE current_Show=idShow AND date>"2019-03-31"
+     GROUP BY coach) AS apr
+     RIGHT OUTER JOIN
+     -- the number of shows that each coach attended in MARCH
+    (SELECT coach AS coach_id_mar, COUNT(coach) AS MARCH_COUNT
+     FROM CoachInShow,TVShow
+     WHERE current_Show=idShow AND date<="2019-03-31"
+     GROUP BY coach) AS mar
+     ON coach_id_mar=coach_id_apr
+  );
+
+-- 4. Most Expensive Contender
+-- select the contender who earned the maximum total salary.
+ SELECT stageName,idContender,MAX(Total)
+ FROM (-- state total salary, stage name, and idContender of each contender in Contender
+       -- table respectively
+       SELECT SUM(dailySalary) AS Total,stageName,idContender
+       FROM Participant, Contender
+       WHERE idContender = contender
+       GROUP BY contender) AS A
+       -- Look up the maximum total salary through these values.
+ WHERE Total = (SELECT MAX(Total)
+                FROM(SELECT SUM(dailySalary) AS Total
+                     FROM Participant
+                     GROUP BY contender) AS B
+) ;
+
+-- 5. March Payment Report
+-- create the report of coaches in march
+(SELECT CONCAT("id:    ",idCoach,"    name:     ",name,"    daily_Salary:     ",dailySalary,"   CountOfShows:     ",COUNT(current_Show),"    total Salary:     ",COUNT(current_Show)*dailySalary)
+AS March_Report
+FROM Coach,TVShow,CoachInShow
+WHERE date <= "2019-03-31" AND coach=idCoach AND current_Show= idShow
+GROUP BY idCoach
+)
+UNION
+-- create the report of participants in march
+(SELECT CONCAT("id:    ",idParticipant,"      name:     ",name,"    daily_Salary:     ",dailySalary,"   CountOfShows:     ",COUNT(current_Show),"    total Salary:     ",COUNT(current_Show)*dailySalary)
+ FROM Participant p ,TVShow ,ContenderInShow s ,Contender
+ WHERE date <= "2019-03-31" AND s.contender=idContender AND current_Show= idShow AND p.contender=idContender
+ GROUP BY idParticipant
+)
+
+UNION
+-- sum up the total salaries in MARCH(coach,participant)
+
+(SELECT CONCAT("total Amount:  ",SUM(SUM_COA) )
+ FROM(
+-- total salary of coaches
+(SELECT COUNT(*)*dailySalary AS SUM_COA
+ FROM Coach, TVShow,CoachInShow
+ WHERE date <= '2019-03-31' AND coach=idCoach AND current_Show=idShow
+ GROUP BY idCoach)
+
+UNION
+-- total salary of participants
+(SELECT COUNT(*)*dailySalary
+FROM Participant p, TVShow, ContenderInShow con,Contender
+WHERE date<='2019-03-31' AND p.contender = idContender AND current_Show= idShow AND con.contender=idContender
+GROUP BY idContender)
+)AS totalAmount
+);
+
+-- 6. Well Formed Groups!
+-- insert an invalid contender in the table contender
+-- a contender which is comprised by one participant
+INSERT Contender
+VALUES("Vegetarian","Group","CT1234569","C14602401");
+INSERT Participant
+VALUES("Susan Doris","Doris","1983-06-29","176-180","02803184201",100,"F","CT1234569");
+-- check whether there is an invalid contender
+SELECT CASE WHEN EXISTS(
+SELECT*
+FROM(-- select the relevant information of the invalid contender
+    SELECT stageName,type,member
+     FROM(
+          -- select the number of members contender had.
+          SELECT stageName,type,idContender,COUNT(con.contender) AS member
+          FROM Contender LEFT OUTER JOIN Participant AS con
+	        ON idContender=con.contender
+ 	        GROUP BY idContender
+          )AS T_first
+     WHERE member<2 AND type="Group") AS T_Secondary
+   )
+THEN "TRUE" ELSE "FALSE" END AS Boolean_Violation
+;
